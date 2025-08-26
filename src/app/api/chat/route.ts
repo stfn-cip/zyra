@@ -7,7 +7,7 @@ export const POST = async (req: Request) => {
 
   const result = streamText({
     model: "openai/gpt-5-nano",
-    system: "You are a helpful assistant.",
+    system: "You are a helpful assistant. Use markdown in your responses.",
     messages: convertToModelMessages(messages),
   });
 

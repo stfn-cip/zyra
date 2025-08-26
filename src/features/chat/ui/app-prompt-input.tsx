@@ -24,6 +24,7 @@ type InferUIMessageMetadata<T extends UIMessage> =
 const AppPromptInput = ({
   sendMessage,
   status,
+  stop,
 }: {
   sendMessage: (
     message:
@@ -48,6 +49,7 @@ const AppPromptInput = ({
     options?: ChatRequestOptions,
   ) => Promise<void>;
   status: ChatStatus;
+  stop: () => Promise<void>;
 }) => {
   const [input, setInput] = useState("");
 
@@ -55,6 +57,8 @@ const AppPromptInput = ({
     <PromptInput
       onSubmit={(e) => {
         e.preventDefault();
+        if (status !== "ready") return;
+
         if (input.trim()) {
           sendMessage({ text: input });
           setInput("");
@@ -73,7 +77,23 @@ const AppPromptInput = ({
             <HiOutlineLightBulb /> Search
           </PromptInputButton>
         </PromptInputTools>
-        <PromptInputSubmit status={status} />
+        <PromptInputSubmit
+          onClick={(e) => {
+            switch (status) {
+              case "streaming":
+                {
+                  e.preventDefault();
+                  stop();
+                }
+            }
+          }}
+          status={status}
+          disabled={
+            (input.trim() === "" && status === "ready") ||
+            status === "error" ||
+            status === "submitted"
+          }
+        />
       </PromptInputToolbar>
     </PromptInput>
   );

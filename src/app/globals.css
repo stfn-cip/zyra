@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@source "../../node_modules/streamdown/dist/index.js";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -117,5 +118,25 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  button {
+    @apply cursor-pointer
+  }
+
+  h1,
+  h2 {
+    @apply text-balance tracking-tighter;
+  }
+
+  h3,
+  h4 {
+    @apply text-balance tracking-tight;
+  }
+
+  p {
+    @apply text-pretty;
   }
 }
