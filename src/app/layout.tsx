@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/ui/sonner";
 
 const be_vietnam_pro = Be_Vietnam_Pro({
   subsets: ["latin"],
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(be_vietnam_pro.className, "dark")}>{children}</body>
+      <body className={cn(be_vietnam_pro.className, "dark")}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
