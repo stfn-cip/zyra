@@ -3,7 +3,7 @@ import {
   getMessages,
   consumeTempMessage,
 } from "@/features/chat/actions";
-import Chat from "@/features/chat/ui/chat";
+import Chat from "@/features/chat/ui/chat-interface";
 import { notFound } from "next/navigation";
 import z from "zod";
 

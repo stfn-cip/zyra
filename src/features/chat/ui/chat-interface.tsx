@@ -13,7 +13,7 @@ import { Response } from "@/components/ai-elements/response";
 import { Loader2Icon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-export default function Chat({
+export default function ChatInterface({
   id,
   initialMessages,
   firstMessage,

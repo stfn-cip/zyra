@@ -42,6 +42,14 @@ export const getChat = async (chatId: string): Promise<chatTypes> => {
   return data as chatTypes;
 };
 
+export const getChats = async (): Promise<chatTypes[]> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("chats").select("id,title");
+  if (error) throw new Error(error.message);
+  
+  return data;
+};
+
 export const createChatWithFirstMessage = async (formData: FormData) => {
   const prompt = formData.get("prompt");
   const parsePrompt = z.string().parse(prompt);
