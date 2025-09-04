@@ -14,12 +14,14 @@ import type { ChatStatus } from "ai";
 import { ArrowUpIcon, Loader2Icon, SquareIcon, XIcon } from "lucide-react";
 import type {
   ComponentProps,
+  DetailedHTMLProps,
+  FormHTMLAttributes,
   HTMLAttributes,
   KeyboardEventHandler,
 } from "react";
 import { Children } from "react";
 
-export type PromptInputProps = HTMLAttributes<HTMLFormElement>;
+export type PromptInputProps = DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
 
 export const PromptInput = ({ className, ...props }: PromptInputProps) => (
   <form

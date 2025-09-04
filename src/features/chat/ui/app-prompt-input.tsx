@@ -15,17 +15,13 @@ import {
   FileUIPart,
   UIMessage,
 } from "ai";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { HiOutlineLightBulb } from "react-icons/hi";
 
 type InferUIMessageMetadata<T extends UIMessage> =
   T extends UIMessage<infer METADATA> ? METADATA : unknown;
 
-const AppPromptInput = ({
-  sendMessage,
-  status,
-  stop,
-}: {
+type AppPromptInputTypes = {
   sendMessage: (
     message:
       | (CreateUIMessage<UIMessage> & {
@@ -50,22 +46,27 @@ const AppPromptInput = ({
   ) => Promise<void>;
   status: ChatStatus;
   stop: () => Promise<void>;
-}) => {
+};
+
+const AppPromptInput = ({
+  sendMessage,
+  status,
+  stop,
+}: AppPromptInputTypes) => {
   const [input, setInput] = useState("");
 
-  return (
-    <PromptInput
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (status !== "ready") return;
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (status !== "ready") return;
 
-        if (input.trim()) {
-          sendMessage({ text: input });
-          setInput("");
-        }
-      }}
-      className="mx-auto w-[45rem]"
-    >
+    if (input.trim()) {
+      sendMessage({ text: input });
+      setInput("");
+    }
+  };
+
+  return (
+    <PromptInput onSubmit={handleSubmit} className="mx-auto w-[45rem]">
       <PromptInputTextarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -78,13 +79,12 @@ const AppPromptInput = ({
           </PromptInputButton>
         </PromptInputTools>
         <PromptInputSubmit
-          onClick={(e) => {
+          onClick={async (e) => {
             switch (status) {
-              case "streaming":
-                {
-                  e.preventDefault();
-                  stop();
-                }
+              case "streaming": {
+                e.preventDefault();
+                stop();
+              }
             }
           }}
           status={status}
