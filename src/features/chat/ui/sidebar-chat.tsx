@@ -5,7 +5,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/ui/sidebar";
-import { getChats } from "../actions";
+import { deleteChat, getChats } from "../actions";
 import Link from "next/link";
 import { Loader2Icon, MoreHorizontal } from "lucide-react";
 import {
@@ -38,9 +38,7 @@ export const SidebarChat = async () => {
                 <DropdownMenuItem>
                   <span>Edit Project</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Delete Project</span>
-                </DropdownMenuItem>
+                <DeleteChatButton chatId={chat.id} />
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
@@ -55,5 +53,19 @@ export const SidebarChatSkeleton = () => {
     <div className="flex h-40 w-full items-center justify-center">
       <Loader2Icon className="size-5 animate-spin" />
     </div>
+  );
+};
+
+const DeleteChatButton = ({ chatId }: { chatId: string }) => {
+  const deleteChatWithId = deleteChat.bind(null, chatId);
+
+  return (
+    <form action={deleteChatWithId}>
+      <DropdownMenuItem variant="destructive" asChild>
+        <button type="submit" className="w-full">
+          Delete
+        </button>
+      </DropdownMenuItem>
+    </form>
   );
 };

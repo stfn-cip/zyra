@@ -3,8 +3,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { generateId, UIMessage } from "ai";
 import { chatTypes } from "./types";
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, RedirectType } from "next/navigation";
 import z from "zod";
+import { revalidatePath } from "next/cache";
 
 export const saveMessage = async (
   chatId: string,
@@ -37,7 +38,7 @@ export const getChat = async (chatId: string): Promise<chatTypes> => {
     .eq("id", chatId)
     .maybeSingle();
   if (error) throw new Error(error.message);
-  if (!data) notFound();
+  if (!data) redirect("/new-chat", RedirectType.replace);
 
   return data as chatTypes;
 };
@@ -46,7 +47,7 @@ export const getChats = async (): Promise<chatTypes[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase.from("chats").select("id,title");
   if (error) throw new Error(error.message);
-  
+
   return data;
 };
 
@@ -77,6 +78,14 @@ export const createChatWithFirstMessage = async (formData: FormData) => {
   if (tempError) throw new Error(tempError.message);
 
   redirect(`/chat/${chat.id}?start=${temp.id}`);
+};
+
+export const deleteChat = async (chatId: string): Promise<void> => {
+  const supabase = await createClient();
+  const { error } = await supabase.from("chats").delete().eq("id", chatId);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/");
 };
 
 export const consumeTempMessage = async (

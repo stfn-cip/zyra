@@ -52,10 +52,10 @@ export default SidebarAccount;
 
 const SignOutButton = () => {
   return (
-    <DropdownMenuItem>
-      <form action={signOut}>
-        <button type="submit" className="text-red-400">Sign out</button>
-      </form>
-    </DropdownMenuItem>
+    <form action={signOut}>
+      <DropdownMenuItem variant="destructive" asChild>
+        <button type="submit" className="w-full">Sign out</button>
+      </DropdownMenuItem>
+    </form>
   );
 };
