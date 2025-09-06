@@ -1,9 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { generateId, UIMessage } from "ai";
+import { UIMessage } from "ai";
 import { chatTypes } from "./types";
-import { notFound, redirect, RedirectType } from "next/navigation";
+import { redirect } from "next/navigation";
 import z from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -30,7 +30,7 @@ export const getMessages = async (chatId: string): Promise<UIMessage[]> => {
   return data;
 };
 
-export const getChat = async (chatId: string): Promise<chatTypes> => {
+export const getChat = async (chatId: string): Promise<chatTypes | null> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("chats")
@@ -38,14 +38,16 @@ export const getChat = async (chatId: string): Promise<chatTypes> => {
     .eq("id", chatId)
     .maybeSingle();
   if (error) throw new Error(error.message);
-  if (!data) redirect("/new-chat", RedirectType.replace);
 
-  return data as chatTypes;
+  return data as chatTypes | null;
 };
 
 export const getChats = async (): Promise<chatTypes[]> => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("chats").select("id,title").order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("chats")
+    .select("id,title")
+    .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
 
   return data;

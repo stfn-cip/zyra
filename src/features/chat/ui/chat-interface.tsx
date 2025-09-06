@@ -8,10 +8,12 @@ import {
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import AppPromptInput from "@/features/chat/ui/app-prompt-input";
-import { DefaultChatTransport, UIMessage } from "ai";
+import { ChatRequestOptions, DefaultChatTransport, UIMessage } from "ai";
 import { Response } from "@/components/ai-elements/response";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, RotateCcw } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { appErrorMessage, genericError } from "@/utils/errors";
+import { Button } from "@/ui/button";
 
 export default function ChatInterface({
   id,
@@ -22,7 +24,7 @@ export default function ChatInterface({
   initialMessages?: UIMessage[];
   firstMessage?: string;
 }) {
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, regenerate, error } = useChat({
     id,
     messages: initialMessages,
     transport: new DefaultChatTransport({
@@ -65,6 +67,9 @@ export default function ChatInterface({
               </MessageContent>
             </Message>
           ))}
+
+          {error && <ErrorMessage error={error} regenerate={regenerate} />}
+          
           {status === "submitted" && (
             <Loader2Icon className="size-5 animate-spin" />
           )}
@@ -81,3 +86,29 @@ export default function ChatInterface({
     </main>
   );
 }
+
+const ErrorMessage = ({
+  error,
+  regenerate,
+}: {
+  error: Error;
+  regenerate: ({
+    messageId,
+    ...options
+  }?: {
+    messageId?: string;
+  } & ChatRequestOptions) => Promise<void>;
+  }) => {
+  const message = genericError;
+
+  return (
+    <Message from="assistant">
+      <MessageContent className="gap-5" variant="error">
+        <h6>{message}</h6>
+        <Button type="button" className="rounded-full" onClick={() => regenerate()}>
+          <RotateCcw /> Retry
+        </Button>
+      </MessageContent>
+    </Message>
+  );
+};
