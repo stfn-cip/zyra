@@ -9,7 +9,7 @@ import {
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
 
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { createChatWithFirstMessage } from "../actions";
 
@@ -17,16 +17,10 @@ const NewChatPromptInput = () => {
   const [input, setInput] = useState("");
   const [disabled, setDisabled] = useState(false);
 
-  const handleSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-    setDisabled(true);
-
-    const form = e.currentTarget.form;
-    if (form) form.requestSubmit();
-  };
-
   return (
     <PromptInput
       action={createChatWithFirstMessage}
+      onSubmit={() => setDisabled(true)}
       className="mx-auto w-[45rem]"
     >
       <PromptInputTextarea
@@ -41,7 +35,10 @@ const NewChatPromptInput = () => {
             <HiOutlineLightBulb /> Search
           </PromptInputButton>
         </PromptInputTools>
-        <PromptInputSubmit onClick={handleSubmit} disabled={disabled} />
+        <PromptInputSubmit
+          disabled={disabled}
+          status={disabled ? "submitted" : undefined}
+        />
       </PromptInputToolbar>
     </PromptInput>
   );

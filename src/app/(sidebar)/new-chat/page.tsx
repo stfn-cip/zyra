@@ -1,19 +1,19 @@
-import { signOut } from "@/features/auth/signout/actions";
 import NewChatPromptInput from "@/features/chat/ui/new-chat-prompt-input";
 import { createClient } from "@/lib/supabase/server";
-import { Button } from "@/ui/button";
 
 const Page = async () => {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+  if (error) throw new Error(error.message);
 
   return (
-    <div>
-      <p>{data.user?.email}</p>
-      <p>{data.user?.user_metadata.name}</p>
-      <Button onClick={signOut}>Log out</Button>
+    <main className="flex max-h-svh w-full flex-col items-center justify-center gap-10">
+      <h1 className="text-5xl font-bold">Welcome back{session && ", " + session.user.user_metadata.name}!</h1>
       <NewChatPromptInput />
-    </div>
+    </main>
   );
 };
 export default Page;
