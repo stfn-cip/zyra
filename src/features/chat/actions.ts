@@ -45,7 +45,7 @@ export const getChat = async (chatId: string): Promise<chatTypes> => {
 
 export const getChats = async (): Promise<chatTypes[]> => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("chats").select("id,title");
+  const { data, error } = await supabase.from("chats").select("id,title").order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
 
   return data;
